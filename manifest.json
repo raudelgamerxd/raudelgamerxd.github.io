@@ -1,0 +1,19 @@
+{
+    "short_name": "PWA",
+    "name": "PWA",
+    "description": "This is an offline and installable web application that use worker to cache data.",
+    "display": "standalone",
+    "icons": [
+      {
+        "src": "icon-144.png",
+        "sizes": "144x144",
+        "type": "image/png"
+      }
+    ],
+    "screenshots": [
+      
+    ]
+    "start_url": ".",
+    "theme_color": "#3F51B5"
+  }
+  

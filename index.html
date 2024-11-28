@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title>yunnis</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <style>
+        .box {
+            width: 20px;
+            height: 25px;
+            border: 2px solid var(--icon, var(--trash));
+            border-radius: 1px 1px 4px 4px;
+            position: relative;
+            overflow: hidden;
+            z-index: 2;
+            transition: border-color .3s;
+        }
+
+        .box::before,
+        .box::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            height: var(--h, 20px);
+            top: 0;
+            left: var(--1, 50%);
+            background: var(--b, var(--trash-lines));
+        }
+    </style>
+    <link href="style.css" rel="stylesheet" />
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    1. Programación de ejercicios y módulos que se incluirán en algunos de los proyectos universitarios. 2. Capacitación en conocimientos básicos de programación 3. Pruebas a los módulos desarrollados, reporte de errores identificados. 4. Capacitación básica en HTML, CSS y JavaScript 5. Capacitación en uso básico de GitHub
+    <!-- Navigation-->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top shadow-sm" id="mainNav">
+        <div class="container px-5">
+            <a class="navbar-brand fw-bold" href="#page-top">Start Bootstrap</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                Menu
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ms-auto me-4 my-3 my-lg-0">
+                    <li class="nav-item installApp" style="cursor: pointer;"><a class="nav-link me-lg-3">Install</a></li>
+                    <li class="nav-item"><a class="nav-link me-lg-3" href="#features">Features</a></li>
+                    <li class="nav-item"><a class="nav-link me-lg-3" href="#download">Download</a></li>
+                </ul>
+                <button class="btn btn-primary rounded-pill px-3 mb-2 mb-lg-0" data-bs-toggle="modal" data-bs-target="#feedbackModal">
+                    <span class="d-flex align-items-center">
+                        <span class="small">Send Feedback</span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+        <div class="text-center">
+            <table id="tabla" class="table table-striped">
+                <thead>
+                    <tr>
+                        <td style="background-color: rgb(40, 116, 151); color: white;">No.</td>
+                        <td style="background-color: rgb(40, 116, 151); color: white;">Nombre</td>
+                        <td style="background-color: rgb(40, 116, 151); color: white;">Acción</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Las filas se agregarán dinámicamente aquí -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="text-center">
+            <button onclick="eliminarDatosLocales()" class="btn btn-danger">Eliminar todos los datos</button>
+        </div>
+
+        <!-- Añadiendo el elemento con la clase box -->
+        <div class="text-center" style="margin-top: 20px;">
+            <div class="box" style="--icon: red; --trash: black; --trash-lines: gray;"></div>
+        </div>
+
+        <script>
+            function saveTableData() {
+                const tableData = [];
+                const rows = document.getElementById("tabla").rows;
+                for (let i = 1; i < rows.length; i++) {  // Iniciar en 1 para omitir el encabezado
+                    const row = rows[i];
+                    const data = {
+                        elemento: row.cells[0].textContent,
+                        descripcion: row.cells[1].textContent
+                    };
+                    tableData.push(data);
+                }
+                localStorage.setItem("tableData", JSON.stringify(tableData));
+            }
+
+            function loadTableData() {
+                const savedData = localStorage.getItem("tableData");
+                if (savedData) {
+                    const tableData = JSON.parse(savedData);
+                    const tableBody = document.getElementById("tabla").querySelector('tbody');
+                    
+                    // Limpiar la tabla antes de agregar las filas
+                    tableBody.innerHTML = '';
+
+                    // Agregar las filas de los datos guardados
+                    tableData.forEach(data => {
+                        const newRow = tableBody.insertRow();
+                        const cell1 = newRow.insertCell();
+                        const cell2 = newRow.insertCell();
+                        const cell3 = newRow.insertCell();
+                        cell1.textContent = data.elemento;
+                        cell2.textContent = data.descripcion;
+                        cell3.innerHTML = '<button onclick="eliminarFila(this)" class="btn btn-danger">Eliminar</button>';
+                    });
+                }
+            }
+
+            function agregarFila() {
+                const nombre = document.getElementById("captura").value;
+                const nombreSinEspacios = nombre.trim();
+
+                if (nombreSinEspacios === "") {
+                    alert("Por favor, ingresa un valor valido.");
+                    return;
+                }
+
+                const table = document.getElementById("tabla");
+                const newRow = table.insertRow(-1);
+                const noCell = newRow.insertCell(0);
+                const nombreCell = newRow.insertCell(1);
+                const accionCell = newRow.insertCell(2);
+                
+                noCell.textContent = table.rows.length - 1; // Restar 2 para evitar contar el encabezado
+                nombreCell.textContent = nombre;
+                accionCell.innerHTML = '<button onclick="eliminarFila(this)" class="btn btn-danger">Eliminar</button>';
+
+                saveTableData();
+                document.getElementById("captura").value = ""; // Limpiar el input
+            }
+
+            function eliminarFila(button) {
+                button.parentNode.parentNode.remove();
+                saveTableData();
+            }
+
+            function eliminarDatosLocales() {
+                if (window.confirm('¿Estás seguro de que deseas eliminar todos los datos locales de este sitio?')) {
+                    localStorage.clear();
+                    alert('Datos eliminados correctamente');
+                    location.reload(); // Recargar la página para reflejar los cambios
+                }
+            }
+
+            // Cargar los datos guardados al iniciar la página
+            window.onload = loadTableData;
+        </script>
+    </div>
+</body>
+</html>
